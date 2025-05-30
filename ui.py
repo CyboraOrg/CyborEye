@@ -19,7 +19,11 @@ if uploaded_file is not None:
             result = analyze_file(tmp_file_path)
             st.success("Analysis complete!")
             st.markdown("### 🧾 Report")
+            st.markdown(result["report"])
+            st.markdown("---")
+            st.markdown('### Details')
             st.markdown(result["verdict"])
+            
         except Exception as e:
             st.error(f"Error during analysis: {str(e)}")
         finally:
