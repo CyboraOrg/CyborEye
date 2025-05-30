@@ -50,6 +50,7 @@ from src.tools.disassembler import disassemble_pe
 
 
 def analyze_file(filepath):
+    print(f"[INFO] Analyzing file: {filepath}")
     # hash_data = calculate_hash_entropy(filepath)
     # if "error" in hash_data:
     #     return {"error": hash_data["error"]}
@@ -64,8 +65,9 @@ def analyze_file(filepath):
     #     }
 
     pe_data = parse_pe(filepath)
+    print("[INFO] PE Parsed")
     disasm_data = disassemble_pe(filepath)
-
+    print("[INFO] PE Disassembled")
     pe_analysis = user_proxy.initiate_chat(
         pe_parser_agent,
         message=json.dumps(pe_data, indent=2),
@@ -73,7 +75,8 @@ def analyze_file(filepath):
         max_consecutive_auto_reply=1,
         max_turns=1
     )
-
+    print("[INFO] Parsed PE reported.")
+    
     disasm_analysis = user_proxy.initiate_chat(
         disasm_agent,
         message=json.dumps(disasm_data, indent=2),
@@ -81,10 +84,12 @@ def analyze_file(filepath):
         max_consecutive_auto_reply=1,
         max_turns=1
     )
-
+    print("[INFO] Disassembled PE reported.")
+    
     pe_analysis_content = pe_analysis.chat_history[-1]["content"]
     disasm_analysis_content = disasm_analysis.chat_history[-1]["content"]
 
+    print("[INFO] Generating combined input ...")
     combined_input = f"""
 --- PE Metadata Insight ---
 {pe_analysis_content}
@@ -100,7 +105,7 @@ def analyze_file(filepath):
         max_consecutive_auto_reply=1,
         max_turns=1
     )
-
+    print("[INFO] Static Analysis finished.")
     return {
         # "hash_data": hash_data,
         # "vt_result": vt_result,
