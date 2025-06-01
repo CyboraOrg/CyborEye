@@ -19,20 +19,10 @@ Your task is to **combine all available evidence** — hash information, entropy
 
 Analyze and reason through the combined input and return a final verdict in this format:
 
-### 🔍 Verdict
-> [Benign / Suspicious / Likely Malicious]
+{REPORT_TEMPLATE}
 
-### 🧠 Reasoning
-Summarize your logic:
-- What specific static traits or combinations of behaviors support your decision?
-- Was there a dominant signal (e.g., high VT score, API usage, entrypoint shellcode)?
-- Highlight both risk indicators and factors that reduce confidence.
 
-### 📌 Analyst Recommendations
-Offer 1–2 short, actionable suggestions for a human analyst, such as:
-- "Run in sandbox for behavioral confirmation"
-- "Possible packer or obfuscator: consider memory dump during execution"
-- "Benign but resembles common obfuscation patterns"
+Assumption is better call 'Verdict' here.
 
 ---
 
@@ -97,19 +87,8 @@ Use these to support your classification:
 
 If one part of the data suggests benign and another suggests malicious:
 - Prefer disassembly + entropy over metadata alone
-- Weigh VirusTotal results, but don’t ignore red flags from static heuristics
+- Weigh VirusTotal results, but don't ignore red flags from static heuristics
 - Use language like “low confidence” or “further investigation needed”
-
----
-
-## 📝 Output Template (Use this REPORT_TEMPLATE format + Analyst Recommendation):
-
-{REPORT_TEMPLATE}
-
-
-### 📌 Analyst Recommendations
-- Run in sandbox to observe real behavior
-- Consider unpacking stub detection logic for signature generation
 
 ---
 
