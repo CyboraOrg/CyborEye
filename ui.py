@@ -18,11 +18,18 @@ if uploaded_file is not None:
             st.info(f"Analyzing file: {uploaded_file.name}")
             result = analyze_file(tmp_file_path)
             st.success("Analysis complete!")
-            st.markdown("### 🧾 Report")
-            st.markdown(result["report"])
-            st.markdown("---")
-            st.markdown('### Details')
-            st.markdown(result["verdict"])
+            # Create tabs
+            f, p, d = st.tabs(["Final", "PE", "Disassembler"])
+            # Store the selected tab in session state
+            with f:
+                st.session_state["selected_tab"] = "Final"
+                st.markdown(result["verdict"])
+            with p:
+                st.session_state["selected_tab"] = "PE"
+                st.markdown(result["pe_summary"])
+            with d:
+                st.session_state["selected_tab"] = "Disassembler"
+                st.markdown(result["disasm_summary"])
             
         except Exception as e:
             st.error(f"Error during analysis: {str(e)}")

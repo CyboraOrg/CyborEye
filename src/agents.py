@@ -1,9 +1,10 @@
 from src.prompts import disassembler_agent as da
 from src.prompts import parser_agent as pa
 from src.prompts import verdict_agent as va
-from autogen import AssistantAgent, UserProxyAgent, ConversableAgent
+from autogen import AssistantAgent, UserProxyAgent
 from src.consts import llm_config
 import json
+import os
 
 pe_parser_agent = AssistantAgent(
     name="pe_parser",
@@ -56,7 +57,7 @@ def analyze_file(filepath):
         return {"error": hash_data["error"]}
 
     vt_result = query_virustotal(hash_data["sha256"])
-    if vt_result.get("malicious", 0) >= 5:
+    if int(vt_result.get("malicious", 0)) >= 5:
         return {
             "verdict": "Likely Malicious",
             "reason": "VirusTotal reported the file as malicious.",
@@ -91,6 +92,12 @@ def analyze_file(filepath):
 
     print("[INFO] Generating combined input ...")
     combined_input = f"""
+--- Hash + Entropy
+{json.dumps(hash_data, indent=2)}
+
+--- Virus Total Result
+{json.dumps(vt_result, indent=2)}
+
 --- PE Metadata Insight ---
 {pe_analysis_content}
 
@@ -106,34 +113,37 @@ def analyze_file(filepath):
         max_turns=1
     )
     print("[INFO] Static Analysis finished.")
+    x = None
+    url = os.getenv('REPORT_AGENT_API')
+    if url not in ["", None]:
+        import requests
+        myobj = {
+                "data": [
+                    {
+                        "name": "Portable Executable summary report",
+                        "data": [{"value":pe_analysis_content}]
+                    },
+                    {
+                        "name": "Disassembly summary report",
+                        "data": [{"value":disasm_analysis_content}]
+                    }
+                ],
+                "targets": "Use this report and make me a great representation"
+            }
+        headers = {'Content-Type': 'application/json'}
+        
+        print("Initiating Post request ...")
+        x = requests.post(str(url), json.dumps(myobj), headers=headers)
 
-    import requests
-
-    url = 'http://192.168.41.95:8000/report'
-    myobj = {
-             "data": [
-                 {
-                     "name": "Portable Executable summary report",
-                     "data": [{"value":pe_analysis_content}]
-                 },
-                 {
-                     "name": "Disassembly summary report",
-                     "data": [{"value":disasm_analysis_content}]
-                 }
-             ],
-             "targets": va.system_prompt
-             }
-    headers = {'Content-Type': 'application/json'}
-	
-    print("Initiating Post request ...")
-    # x = requests.post(url, json = myobj, json.dumps(data), headers=headers)
-    x = requests.post(url, json.dumps(myobj), headers=headers)
-
-    return {
+    result = {
         "hash_data": hash_data,
         "vt_result": vt_result,
         "pe_summary": pe_analysis_content,
         "disasm_summary": disasm_analysis_content,
-        "verdict": final_verdict.chat_history[-1]["content"],
-        "report": x.json()["report"]
+        "verdict": final_verdict.chat_history[-1]["content"]
     }
+    
+    if x != None:
+        result["report"] = x.json()["report"]
+    
+    return result
