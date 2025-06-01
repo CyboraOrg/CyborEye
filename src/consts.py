@@ -9,6 +9,8 @@ config_list ={
         "base_url": os.getenv('BASE_AI_API_URL'),
     }
 
+print(f"=====================\nModel: {config_list['model']}\nAPI Key: {config_list['api_key']}\nOpenAI Base API URL: {config_list['base_url']}")
+
 if not config_list["api_key"] or config_list["api_key"] == "sk-YourActualOpenAIKeyGoesHere": # Generic placeholder check
     print("ERROR: OpenAI API key placeholder not replaced with your api key")
     raise ValueError("OpenAI API key placeholder not replaced.")
@@ -22,7 +24,9 @@ llm_config = {
 REPORT_TEMPLATE = '''
 ## 🔍 Report: {agent_name}
 
-### 💠 Assumption: {analysis_assumption}
+### 💠 Assumption:
+{analysis_assumption}
+[Benign / Suspicious / Likely Malicious]
 
 ### 🟡 Summary
 {summary}

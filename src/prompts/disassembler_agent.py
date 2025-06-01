@@ -189,27 +189,11 @@ jne 0x401010
 
 ## 📝 Output Format: Markdown Report
 
-output must be markdown like below
-
-```markdown
-# 🔍 Disassembly Insight Report
-
-## 🧠 Assessment
-> This disassembly appears **[Benign/Suspicious/Likely Malicious]** based on observed instruction patterns.
-
-## 🔑 Key Observations
-- Uses `xor eax, eax` → `mov eax, fs:[eax+0x30]` — PEB access
-- Contains GetProcAddress / LoadLibrary chain
-- Uses `jmp edx` after memory allocation — control redirection
-
-## 📌 Analyst Notes
-- The instruction sequence resembles unpacking shellcode. Entry point code manipulates memory permissions before jumping.
-- Stack setup appears absent or replaced with obfuscated flow.
-- Recommend deeper inspection: entry point may lead to secondary payload.
-```
-or even better to be in REPORT_TEMPLATE format:
+output must be markdown in REPORT_TEMPLATE format:
 
 {REPORT_TEMPLATE}
+
+---
 
 ## ❗ Cautions and Limitations
 
