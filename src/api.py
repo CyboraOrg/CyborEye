@@ -1,4 +1,4 @@
-from src.agents import analyze_file
+from src.agents import analyze_file_t3
 from flask import Flask, request, jsonify
 import os
 
@@ -20,7 +20,7 @@ def upload_file():
     file.save(file_path)
     
     try:
-        result = analyze_file(file_path)
+        result = analyze_file_t3(file_path)
         return jsonify({
             'status': 'success',
             'filename': file.filename,

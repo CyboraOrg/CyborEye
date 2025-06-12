@@ -40,3 +40,32 @@ REPORT_TEMPLATE = '''
 ### 📌 Recommendations
 {recommendations}
 '''
+
+
+YARA_REPORT_TEMPLATE = """\
+# 🧪 YARA Scan Report
+
+## 📄 File Info
+- **Filename**: {filename}
+- **Scan Time**: {scan_time}
+
+---
+
+## 🎯 Matched Rules
+
+| Rule Name        | Tags                     | Description                   |
+|------------------|--------------------------|-------------------------------|
+{rule_table}
+
+---
+
+## 🏷️ Aggregated Tags
+
+`{tags}`
+
+---
+
+## 📝 Analyst Notes
+
+{notes}
+"""

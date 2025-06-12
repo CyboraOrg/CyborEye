@@ -1,10 +1,19 @@
 from src.prompts import disassembler_agent as da
 from src.prompts import parser_agent as pa
 from src.prompts import verdict_agent as va
+from src.prompts import tier1_agent as t1a
 from autogen import AssistantAgent, UserProxyAgent
 from src.consts import llm_config
 import json
 import os
+
+tier_one_agent = AssistantAgent(
+    name="tier_one_agent",
+    llm_config=llm_config,
+    system_message=t1a.system_prompt,
+    human_input_mode="NEVER",
+    max_consecutive_auto_reply=1,
+)
 
 pe_parser_agent = AssistantAgent(
     name="pe_parser",
@@ -48,9 +57,30 @@ from src.tools.virus_total import query_virustotal
 from src.tools.hash_entropy import calculate_hash_entropy
 from src.tools.parser import parse_pe
 from src.tools.disassembler import disassemble_pe
+from src.tools.yara_scanner import YaraScanner
+from datetime import datetime
 
+def analyze_file_t1(filepath, original_path)->dict:
+    print(f"[INFO] Analyzing file with yara scanner: {filepath}")
+    scanner = YaraScanner(rules_directory='src/yara_rules')
+    out = scanner.scan_file(filepath)
+    out["file"] = original_path
+    out["scan_time"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    tier1_result = user_proxy.initiate_chat(
+        tier_one_agent,
+        message=json.dumps(out, indent=2),
+        silent=True,
+        max_consecutive_auto_reply=1,
+        max_turns=1
+    )
+    result = {}
+    result["report"] = tier1_result.chat_history[-1]["content"]
+    return result
+    
+    
+    
 
-def analyze_file(filepath):
+def analyze_file_t3(filepath):
     print(f"[INFO] Analyzing file: {filepath}")
     hash_data = calculate_hash_entropy(filepath)
     if "error" in hash_data:
