@@ -17,9 +17,14 @@ class Alarm(BaseModel):
     alert_id: str
     pattern: str
     related_event_ids: List[str]
-    first_seen: datetime
-    last_seen: datetime
+    first_seen: str  # تغییر به str برای سریال‌سازی JSON
+    last_seen: str   # تغییر به str برای سریال‌سازی JSON
     score: int
+
+    class Config:
+        json_encoders = {
+            datetime: lambda v: v.isoformat()
+        }
 
 # === کمک‌کننده‌های امتیازدهی ===
 WEIGHTS = {
@@ -51,7 +56,7 @@ class CorrelationService:
         self.events: List[RawEvent] = []
 
     def ingest(self, raw: dict):
-        # فیلتر نویز: نادیده گرفتن رویدادهای خوش‌خیم (مانند لاگین‌ها)
+        # فیلتر نویز: نادیده گرفتن رویدادهای خوش‌خیم
         if raw.get('event_type') == '4624':
             return
         e = RawEvent.model_validate(raw)
@@ -88,8 +93,8 @@ class CorrelationService:
                         alert_id=f"ALRT-{host}-{start.strftime('%H%M')}-PEP",
                         pattern="Phishing-Execution-Persistence",
                         related_event_ids=ids,
-                        first_seen=start,
-                        last_seen=window[-1].timestamp,
+                        first_seen=start.isoformat(),
+                        last_seen=window[-1].timestamp.isoformat(),
                         score=score
                     ))
                     continue
@@ -103,8 +108,8 @@ class CorrelationService:
                             alert_id=f"ALRT-{host}-{start.strftime('%H%M')}-C2",
                             pattern="C2-Communication",
                             related_event_ids=ids,
-                            first_seen=start,
-                            last_seen=window[-1].timestamp,
+                            first_seen=start.isoformat(),
+                            last_seen=window[-1].timestamp.isoformat(),
                             score=score
                         ))
                 
@@ -118,8 +123,8 @@ class CorrelationService:
                             alert_id=f"ALRT-{host}-{start.strftime('%H%M')}-LM",
                             pattern="Lateral-Movement",
                             related_event_ids=ids,
-                            first_seen=start,
-                            last_seen=window[-1].timestamp,
+                            first_seen=start.isoformat(),
+                            last_seen=window[-1].timestamp.isoformat(),
                             score=score
                         ))
                 
@@ -130,8 +135,8 @@ class CorrelationService:
                         alert_id=f"ALRT-{host}-{start.strftime('%H%M')}-EXF",
                         pattern="Data-Exfiltration",
                         related_event_ids=ids,
-                        first_seen=start,
-                        last_seen=window[-1].timestamp,
+                        first_seen=start.isoformat(),
+                        last_seen=window[-1].timestamp.isoformat(),
                         score=score
                     ))
         return alerts
@@ -155,6 +160,6 @@ if __name__ == '__main__':
             print(f"Host: {host}, Events: {[e.dict() for e in evts]}")
         
         alerts = cs.correlate()
-        print(json.dumps([a.dict() for a in alerts], default=str, indent=2))
+        print(json.dumps([a.dict() for a in alerts], indent=2, ensure_ascii=False))
     except FileNotFoundError:
-        print("not found")
+        print("خطا: فایل scenario_noisy.json در مسیر مشخص‌شده پیدا نشد.")

@@ -1,0 +1,161 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جدول زمانی حوادث سایبری</title>
+    <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.21.4/Babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <div id="root" class="container mx-auto p-4 max-w-4xl"></div>
+    <script type="text/babel">
+        const { useState } = React;
+
+        const IncidentTimeline = ({ alerts }) => {
+            const [expanded, setExpanded] = useState(null);
+
+            const toggleExpand = (index) => {
+                setExpanded(expanded === index ? null : index);
+            };
+
+            const getSeverity = (score) => {
+                if (score <= 30) return { text: 'پایین', color: 'bg-green-100 text-green-800' };
+                if (score <= 60) return { text: 'متوسط', color: 'bg-yellow-100 text-yellow-800' };
+                return { text: 'بالا', color: 'bg-red-100 text-red-800' };
+            };
+
+            return (
+                <div className="space-y-6">
+                    <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">جدول زمانی حوادث سایبری</h1>
+                    <div className="relative">
+                        {/* خط عمودی جدول زمانی */}
+                        <div className="absolute h-full w-1 bg-gray-300 left-1/2 transform -translate-x-1/2"></div>
+                        {alerts.map((alert, index) => {
+                            const severity = getSeverity(alert.score);
+                            return (
+                                <div key={alert.alert_id} className="relative mb-8 flex items-center">
+                                    {/* نقطه روی خط زمانی */}
+                                    <div className="absolute w-4 h-4 bg-blue-500 rounded-full left-1/2 transform -translate-x-1/2"></div>
+                                    <div className={`w-full ${index % 2 === 0 ? 'pr-8' : 'pl-8'}`}>
+                                        <div className={`border rounded-lg p-4 shadow-lg ${severity.color}`}>
+                                            <div className="flex justify-between items-center">
+                                                <div>
+                                                    <h2 className="text-xl font-semibold">{alert.pattern}</h2>
+                                                    <p><strong>شناسه هشدار:</strong> {alert.alert_id}</p>
+                                                    <p><strong>اولین مشاهده:</strong> {new Date(alert.first_seen).toLocaleString('fa-IR')}</p>
+                                                    <p><strong>آخرین مشاهده:</strong> {new Date(alert.last_seen).toLocaleString('fa-IR')}</p>
+                                                    <p><strong>امتیاز:</strong> {alert.score} ({severity.text})</p>
+                                                    {alert.mitre_techniques && (
+                                                        <p><strong>تکنیک‌های MITRE:</strong> {alert.mitre_techniques.join(', ')}</p>
+                                                    )}
+                                                    {alert.narrative && (
+                                                        <p><strong>روایت:</strong> {alert.narrative}</p>
+                                                    )}
+                                                </div>
+                                                <button
+                                                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+                                                    onClick={() => toggleExpand(index)}
+                                                >
+                                                    {expanded === index ? 'مخفی کردن رویدادها' : 'نمایش رویدادها'}
+                                                </button>
+                                            </div>
+                                            {expanded === index && (
+                                                <div className="mt-4">
+                                                    <h3 className="font-medium">رویدادهای مرتبط:</h3>
+                                                    <ul className="list-disc pr-5">
+                                                        {alert.related_event_ids.map(id => (
+                                                            <li key={id}>{id}</li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            );
+        };
+
+        // داده‌های نمونه (باید از agent_integration.py دریافت شود)
+        const alerts = [
+            {
+                alert_id: "ALRT-WS-01-0801-PEP",
+                pattern: "Phishing-Execution-Persistence",
+                related_event_ids: ["evt3", "evt4", "evt6", "evt7", "evt9"],
+                first_seen: "2025-06-10T08:01:00Z",
+                last_seen: "2025-06-10T08:10:00Z",
+                score: 54,
+                mitre_techniques: ["T1566.001", "T1059", "T1547.001"],
+                narrative: "یک ایمیل فیشینگ (evt3) حاوی پیوست مخرب دریافت شد که منجر به اجرای فرآیند (evt4, evt6) و ایجاد کلید رجیستری برای پایداری (evt7) شد. تلاش برای اتصال به IP مخرب (evt9) نیز مشاهده شد."
+            },
+            {
+                alert_id: "ALRT-DB-SERVER-01-0821-LM",
+                pattern: "Lateral-Movement",
+                related_event_ids: ["evt12", "evt13", "evt14"],
+                first_seen: "2025-06-10T08:21:00Z",
+                last_seen: "2025-06-10T08:30:00Z",
+                score: 55,
+                mitre_techniques: ["T1078", "T1059.001"],
+                narrative: "کاربر ممتاز 'serviceuser' فرآیندهای wmic (evt12) و powershell (evt13) را برای اجرای دستورات مشکوک اجرا کرد، که نشانه حرکت جانبی است."
+            },
+            {
+                alert_id: "ALRT-DB-SERVER-01-0821-EXF",
+                pattern: "Data-Exfiltration",
+                related_event_ids: ["evt12", "evt13", "evt14", "evt15"],
+                first_seen: "2025-06-10T08:21:00Z",
+                last_seen: "2025-06-10T08:35:00Z",
+                score: 77,
+                mitre_techniques: ["T1041"],
+                narrative: "استخراج داده (evt15) به IP مخرب 198.51.100.25 با حجم بالا مشاهده شد، همراه با فعالیت‌های مشکوک دیگر (evt12, evt13, evt14)."
+            }
+        ];
+
+        ReactDOM.render(<IncidentTimeline alerts={alerts} />, document.getElementById('root'));
+    </script>
+</body>
+</html>

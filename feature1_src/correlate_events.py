@@ -1,5 +1,5 @@
 from typing import List, Dict
-from .CorrelationService import CorrelationService
+from CorrelationService import CorrelationService
 
 def correlate_events(events: List[Dict]) -> List[Dict]:
     """
@@ -7,7 +7,7 @@ def correlate_events(events: List[Dict]) -> List[Dict]:
     ورودی:
         events: لیست دیکشنری‌های رویداد.
     خروجی:
-        لیست دیکشنری‌های هشدار با پتانسیل نگاشت MITRE.
+        لیست دیکشنری‌های هشدار.
     """
     cs = CorrelationService(window_minutes=10)
     for event in events:
