@@ -8,7 +8,7 @@ from correlate_events import correlate_events
 # لطفاً کلید API معتبر OpenAI را وارد کنید
 llm_config = {
     "model": "gpt-4o-mini",
-    "api_key": "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", 
+    "api_key": "", 
     "api_type": "openai",
 }
 
