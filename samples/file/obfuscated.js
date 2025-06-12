@@ -1,0 +1,1 @@
+var _0xabc=["\x68\x65\x6C\x6C\x6F"];console["log"](_0xabc[0]);
