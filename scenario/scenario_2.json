@@ -1,0 +1,48 @@
+[
+  {
+    "timestamp": "2025-06-12T07:47:05.978877Z",
+    "event_source": "EmailGateway",
+    "event_type": "email_received",
+    "from": "sales@trustedvendor.com",
+    "to": "user1@company.com",
+    "subject": "Urgent Invoice Q2",
+    "attachment": "invoice_2025.zip",
+    "malware_score": 4.2
+  },
+  {
+    "timestamp": "2025-06-12T07:52:05.978877Z",
+    "event_source": "EDR",
+    "event_type": "process_creation",
+    "user": "user1",
+    "hostname": "HOST-A",
+    "process_name": "invoice_2025.exe",
+    "command_line": "C:\\Users\\user1\\AppData\\Local\\Temp\\invoice_2025.exe",
+    "parent_process": "outlook.exe"
+  },
+  {
+    "timestamp": "2025-06-12T07:53:05.978877Z",
+    "event_source": "EDR",
+    "event_type": "registry_key_created",
+    "registry_path": "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\updater",
+    "value": "\"C:\\Users\\user1\\AppData\\Local\\Temp\\invoice_2025.exe\""
+  },
+  {
+    "timestamp": "2025-06-12T08:07:05.978877Z",
+    "event_source": "WindowsSecurityLog",
+    "event_type": "4624",
+    "logon_type": 3,
+    "account_name": "user1",
+    "source_ip": "10.0.1.5",
+    "destination_host": "HOST-B"
+  },
+  {
+    "timestamp": "2025-06-12T08:17:05.978877Z",
+    "event_source": "Firewall",
+    "event_type": "connection_attempt",
+    "action": "allowed",
+    "src_ip": "10.0.1.5",
+    "dst_ip": "198.51.100.25",
+    "dst_port": 443,
+    "bytes_sent": 3049283
+  }
+]

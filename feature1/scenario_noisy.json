@@ -1,0 +1,17 @@
+[
+  {"id":"evt1","timestamp":"2025-06-10T07:55:00Z","event_source":"WindowsSecurityLog","event_type":"4624","account_name":"alice","source_ip":"10.0.0.5","destination_host":"WS-01"},
+  {"id":"evt2","timestamp":"2025-06-10T08:00:00Z","event_source":"EmailGateway","event_type":"email_received","from":"it@company.com","to":"alice@company.com","subject":"Monthly Newsletter","attachment":null},
+  {"id":"evt3","timestamp":"2025-06-10T08:01:00Z","event_source":"EmailGateway","event_type":"email_received","from":"sales@trustedvendor.com","to":"alice@company.com","subject":"Urgent Invoice Q2","attachment":"invoice_2025.zip"},
+  {"id":"evt4","timestamp":"2025-06-10T08:02:30Z","event_source":"EDR","event_type":"process_creation","user":"alice","hostname":"WS-01","process_name":"invoice_2025.zip","command_line":"C:\\Users\\alice\\Downloads\\invoice_2025.zip"},
+  {"id":"evt5","timestamp":"2025-06-10T08:03:00Z","event_source":"EDR","event_type":"archive_extracted","user":"alice","hostname":"WS-01","archive_file":"invoice_2025.zip","extracted_file":"invoice_2025.exe"},
+  {"id":"evt6","timestamp":"2025-06-10T08:04:00Z","event_source":"EDR","event_type":"process_creation","user":"alice","hostname":"WS-01","process_name":"invoice_2025.exe","command_line":"C:\\Users\\alice\\Downloads\\invoice_2025.exe","parent_process":"explorer.exe"},
+  {"id":"evt7","timestamp":"2025-06-10T08:04:30Z","event_source":"EDR","event_type":"registry_key_created","hostname":"WS-01","registry_path":"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\updater","value":"\"C:\\Users\\alice\\AppData\\Local\\Temp\\updater.exe\""},
+  {"id":"evt8","timestamp":"2025-06-10T08:05:00Z","event_source":"WindowsSecurityLog","event_type":"4624","account_name":"bob","source_ip":"10.0.0.20","destination_host":"WS-02"},
+  {"id":"evt9","timestamp":"2025-06-10T08:10:00Z","event_source":"Firewall","event_type":"connection_attempt","src_ip":"10.0.0.5","dst_ip":"198.51.100.25","dst_port":443,"action":"allowed"},
+  {"id":"evt10","timestamp":"2025-06-10T08:11:00Z","event_source":"Firewall","event_type":"dns_query","query":"c2-server.badguy.cn","response":"198.51.100.25"},
+  {"id":"evt11","timestamp":"2025-06-10T08:20:00Z","event_source":"WindowsSecurityLog","event_type":"4624","account_name":"serviceuser","source_ip":"10.0.0.50","destination_host":"DB-SERVER-01"},
+  {"id":"evt12","timestamp":"2025-06-10T08:21:00Z","event_source":"EDR","event_type":"process_creation","user":"serviceuser","hostname":"DB-SERVER-01","process_name":"wmic.exe","command_line":"wmic /node:WS-01 process call create \"whoami\""},
+  {"id":"evt13","timestamp":"2025-06-10T08:22:00Z","event_source":"EDR","event_type":"process_creation","user":"serviceuser","hostname":"DB-SERVER-01","process_name":"powershell.exe","command_line":"powershell -enc ...","parent_process":"wmic.exe"},
+  {"id":"evt14","timestamp":"2025-06-10T08:30:00Z","event_source":"Firewall","event_type":"connection_attempt","src_ip":"10.0.0.50","dst_ip":"198.51.100.25","dst_port":443,"action":"allowed"},
+  {"id":"evt15","timestamp":"2025-06-10T08:35:00Z","event_source":"EDR","event_type":"data_exfil","hostname":"DB-SERVER-01","destination_ip":"198.51.100.25","bytes_sent":1234567}
+]
