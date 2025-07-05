@@ -1,0 +1,28 @@
+rule_id: CE-LAT-001
+rule_name: PsExec Execution
+description: >
+  Detects the execution of PsExec, a tool commonly used for lateral movement.
+  The detection looks for the characteristic service creation on a target host.
+author: CyborEye Threat Research
+severity: Medium
+log_sources:
+  - windows_event_7045 # Service Creation
+  - sysmon_event_1     # Process Creation
+mitre_mapping:
+  tactic: Lateral Movement (TA0008)
+  technique_id: T1569.002
+  technique_name: "System Services: Service Execution"
+detection:
+  selection:
+    # This can be triggered by either the service creation event or the process creation event
+    service_name: 'PSEXESVC'
+  selection_2:
+    process_name: 'PSEXESVC.exe'
+    parent_process_name: 'services.exe'
+  condition: selection or selection_2
+false_positives:
+  - Legitimate remote administration by system administrators.
+tags:
+  - lateral_movement
+  - psexec
+  - execution

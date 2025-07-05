@@ -1,0 +1,81 @@
+rule_id: CE-DE-001
+rule_name: Inhibit System Recovery via Shadow Copy Deletion
+description: >
+  Detects attempts to delete volume shadow copies using vssadmin.exe or wbadmin.exe.
+  This is a common ransomware technique (T1490) to prevent easy system recovery.
+author: CyborEye Threat Research
+severity: High
+log_sources:
+  - windows_event_4688
+  - sysmon_event_1
+mitre_mapping:
+  tactic: Defense Evasion (TA0005)
+  technique_id: T1490
+  technique_name: Inhibit System Recovery
+detection:
+  selection_vssadmin:
+    process_name: 'vssadmin.exe'
+    process_commandline:
+      - 'delete'
+      - 'shadows'
+  selection_wbadmin:
+    process_name: 'wbadmin.exe'
+    process_commandline:
+      - 'delete'
+      - 'catalog'
+  condition: selection_vssadmin or selection_wbadmin
+false_positives:
+  - Rare, but possible during specific system maintenance or backup software removal.
+tags:
+  - ransomware
+  - defense_evasion
+  - t1490
+---
+rule_id: CE-DE-002
+rule_name: Windows Event Log Cleared
+description: >
+  Detects the use of the built-in wevtutil.exe utility to clear a specific
+  Windows Event Log. This is a classic anti-forensic technique (T1070.001).
+author: CyborEye Threat Research
+severity: High
+log_sources:
+  - sysmon_event_1
+mitre_mapping:
+  tactic: Defense Evasion (TA0005)
+  technique_id: T1070.001
+  technique_name: "Indicator Removal: Clear Windows Event Logs"
+detection:
+  selection:
+    process_name: 'wevtutil.exe'
+    process_commandline:
+      - 'cl'
+      - 'clear-log'
+  condition: selection
+false_positives:
+  - Legitimate administrative scripts, although clearing logs is generally discouraged.
+tags:
+  - defense_evasion
+  - anti-forensics
+---
+rule_id: CE-DE-003
+rule_name: Secure Deletion Utility Execution
+description: >
+  Detects the execution of SDelete, a utility for securely deleting files to
+  prevent their recovery. This is often used by adversaries to cover their tracks.
+author: CyborEye Threat Research
+severity: Medium
+log_sources:
+  - sysmon_event_1
+mitre_mapping:
+  tactic: Defense Evasion (TA0005)
+  technique_id: T1070.004
+  technique_name: "Indicator Removal: File Deletion"
+detection:
+  selection:
+    process_name: 'sdelete.exe'
+  condition: selection
+false_positives:
+  - Legitimate use during system decommissioning or data sanitization procedures.
+tags:
+  - defense_evasion
+  - anti-forensics

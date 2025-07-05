@@ -1,0 +1,39 @@
+rule_id: CE-DISC-001
+rule_name: Command Shell System Discovery
+description: >
+  Detects the execution of common system discovery commands via cmd.exe.
+  A single execution may be benign, but a cluster of these is highly suspicious.
+author: CyborEye Threat Research
+severity: Low
+log_sources:
+  - windows_event_4688
+  - sysmon_event_1
+mitre_mapping:
+  tactic: Discovery (TA0007)
+  technique_id: T1059.003
+  technique_name: "Command and Scripting Interpreter: Windows Command Shell"
+detection:
+  selection:
+    parent_process_name: 'cmd.exe'
+    process_name:
+      - 'whoami.exe'
+      - 'hostname.exe'
+      - 'systeminfo.exe'
+      - 'ipconfig.exe'
+      - 'net.exe'
+      - 'netstat.exe'
+      - 'tasklist.exe'
+      - 'qprocess.exe'
+  # FIX: Added a filter to ignore common admin and helpdesk accounts to reduce noise.
+  filter:
+    user_name:
+      - 'admin'
+      - 'helpdesk'
+      - 'support'
+  condition: selection and not filter
+false_positives:
+  - Benign user activity or helpdesk troubleshooting.
+tags:
+  - discovery
+  - cmd
+  - lolbin

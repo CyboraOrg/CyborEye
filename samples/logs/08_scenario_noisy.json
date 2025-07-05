@@ -1,0 +1,21 @@
+{
+  "name": "Scenario 8: Noisy Environment",
+  "description": "A mix of benign and suspicious events to test the engine's ability to filter noise and correlate sparse signals.",
+  "events": [
+    { "id": "evt-c7d6e5f4", "timestamp": "2025-06-10T07:55:00Z", "event_source": "WindowsSecurityLog", "event_type": "4624", "account_name": "alice", "source_ip": "10.0.0.5", "destination_host": "WS-01" },
+    { "id": "evt-g3h2i1j0", "timestamp": "2025-06-10T08:00:00Z", "event_source": "EmailGateway", "event_type": "email_received", "from": "it@company.com", "to": "alice@company.com", "subject": "Monthly Newsletter", "attachment": null },
+    { "id": "evt-k9l8m7n6", "timestamp": "2025-06-10T08:01:00Z", "event_source": "EmailGateway", "event_type": "email_received", "from": "sales@trustedvendor.com", "to": "alice@company.com", "subject": "Urgent Invoice Q2", "attachment": "invoice_2025.zip", "hostname": "WS-01", "user": "alice" },
+    { "id": "evt-o5p4q3r2", "timestamp": "2025-06-10T08:02:30Z", "event_source": "EDR", "event_type": "process_creation", "user": "alice", "hostname": "WS-01", "process_name": "invoice_2025.zip", "command_line": "C:\\Users\\alice\\Downloads\\invoice_2025.zip" },
+    { "id": "evt-s1t0u9v8", "timestamp": "2025-06-10T08:03:00Z", "event_source": "EDR", "event_type": "archive_extracted", "user": "alice", "hostname": "WS-01", "archive_file": "invoice_2025.zip", "extracted_file": "invoice_2025.exe" },
+    { "id": "evt-w7x6y5z4", "timestamp": "2025-06-10T08:04:00Z", "event_source": "EDR", "event_type": "process_creation", "user": "alice", "hostname": "WS-01", "process_name": "invoice_2025.exe", "command_line": "C:\\Users\\alice\\Downloads\\invoice_2025.exe", "parent_process": "explorer.exe" },
+    { "id": "evt-a3b2c1d0", "timestamp": "2025-06-10T08:04:30Z", "event_source": "EDR", "event_type": "registry_key_created", "hostname": "WS-01", "registry_path": "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\\updater", "value": "\"C:\\Users\\alice\\AppData\\Local\\Temp\\updater.exe\"" },
+    { "id": "evt-e9f8g7h6", "timestamp": "2025-06-10T08:05:00Z", "event_source": "WindowsSecurityLog", "event_type": "4624", "account_name": "bob", "source_ip": "10.0.0.20", "destination_host": "WS-02" },
+    { "id": "evt-i5j4k3l2", "timestamp": "2025-06-10T08:10:00Z", "event_source": "Firewall", "event_type": "connection_attempt", "src_ip": "10.0.0.5", "dst_ip": "198.51.100.25", "dst_port": 443, "action": "allowed" },
+    { "id": "evt-m1n0o9p8", "timestamp": "2025-06-10T08:11:00Z", "event_source": "Firewall", "event_type": "dns_query", "query": "c2-server.badguy.cn", "response": "198.51.100.25" },
+    { "id": "evt-q7r6s5t4", "timestamp": "2025-06-10T08:20:00Z", "event_source": "WindowsSecurityLog", "event_type": "4624", "account_name": "serviceuser", "source_ip": "10.0.0.50", "destination_host": "DB-SERVER-01" },
+    { "id": "evt-u3v2w1x0", "timestamp": "2025-06-10T08:21:00Z", "event_source": "EDR", "event_type": "process_creation", "user": "serviceuser", "hostname": "DB-SERVER-01", "process_name": "wmic.exe", "command_line": "wmic /node:WS-01 process call create \"whoami\"" },
+    { "id": "evt-y9z8a7b6", "timestamp": "2025-06-10T08:22:00Z", "event_source": "EDR", "event_type": "process_creation", "user": "serviceuser", "hostname": "DB-SERVER-01", "process_name": "powershell.exe", "command_line": "powershell -enc ZgBvAG8AYgBhAHIA", "parent_process": "wmic.exe" },
+    { "id": "evt-c5d4e3f2", "timestamp": "2025-06-10T08:30:00Z", "event_source": "Firewall", "event_type": "connection_attempt", "src_ip": "10.0.0.50", "dst_ip": "198.51.100.25", "dst_port": 443, "action": "allowed" },
+    { "id": "evt-g1h0i9j8", "timestamp": "2025-06-10T08:35:00Z", "event_source": "EDR", "event_type": "data_exfil", "hostname": "DB-SERVER-01", "destination_ip": "198.51.100.25", "bytes_sent": 1234567 }
+  ]
+}
