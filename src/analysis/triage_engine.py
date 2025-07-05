@@ -10,7 +10,7 @@ class SmartTriageEngine:
     and generates ATT&CK-mapped findings, as described in the architecture.
     """
 
-    def __init__(self, rules_directory: str = 'src/rules/'):
+    def __init__(self, rules_directory: str = 'src/rules/triage'):
         """
         Initializes the engine by loading and compiling detection rules from YAML files.
         

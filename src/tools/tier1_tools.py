@@ -12,7 +12,7 @@ class YaraScanner:
     for both broad scanning (all enabled rules) and targeted scanning (a single rule).
     It now supports dynamic reloading of rules.
     """
-    def __init__(self, rules_directory: str = 'src/yara_rules'):
+    def __init__(self, rules_directory: str = 'src/rules/yara'):
         print("[INFO] Initializing YARA Scanner...")
         self.rules_directory = rules_directory
         # Ensure the rules directory exists
