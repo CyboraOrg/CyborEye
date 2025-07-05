@@ -1,0 +1,26 @@
+{
+  "name": "Scenario 3: Insider Threat Data Exfiltration",
+  "description": "A privileged user exfiltrating sensitive data to a personal cloud storage account.",
+  "events": [
+    { "id": "evt-e2f1g0h9", "timestamp": "2025-07-06T21:55:00Z", "hostname": "workstation-dev-5", "event_source": "browser_history", "user": "dev_user", "url": "https://internal.wiki.example.com/search?q=customer+database+location" },
+    { "id": "evt-i8j7k6l5", "timestamp": "2025-07-06T22:00:00Z", "hostname": "db-server-01", "event_source": "windows_event_log", "event_id": 4624, "user": "dev_user", "logon_type": 10, "source_ip": "10.0.1.88" },
+    { "id": "evt-m4n3o2p1", "timestamp": "2025-07-06T22:05:00Z", "hostname": "db-server-01", "event_source": "sql_audit", "user": "dev_user", "statement": "SELECT * FROM Customers;", "database": "PROD_CRM" },
+    { "id": "evt-q0r9s8t7", "timestamp": "2025-07-06T22:05:30Z", "hostname": "db-server-01", "event_source": "sysmon", "event_id": 1, "user": "dev_user", "process_name": "bcp.exe", "command_line": "bcp.exe PROD_CRM.dbo.Customers out C:\\temp\\stage\\customers.csv -c -t, -S . -T", "parent_process_name": "sqlwb.exe" },
+    { "id": "evt-u6v5w4x3", "timestamp": "2025-07-06T22:08:00Z", "hostname": "fileserver-03", "event_source": "windows_event_log", "event_id": 5145, "user": "dev_user", "share_name": "\\\\fileserver-03\\engineering", "file_path": "project_bluebird_designs.cad", "access_type": "Read" },
+    { "id": "evt-y2z1a0b9", "timestamp": "2025-07-06T22:08:05Z", "hostname": "db-server-01", "event_source": "sysmon", "event_id": 11, "user": "dev_user", "process_name": "explorer.exe", "file_path": "C:\\temp\\stage\\project_bluebird_designs.cad" },
+    { "id": "evt-c8d7e6f5", "timestamp": "2025-07-06T22:10:00Z", "hostname": "db-server-01", "event_source": "sysmon", "event_id": 1, "user": "dev_user", "process_name": "7z.exe", "command_line": "7z.exe a -p'SuperSecretPassword' C:\\temp\\archive.zip C:\\temp\\stage\\*", "parent_process_name": "explorer.exe" },
+    { "id": "evt-g4h3i2j1", "timestamp": "2025-07-06T22:12:00Z", "hostname": "db-server-01", "event_source": "sysmon", "event_id": 1, "user": "dev_user", "process_name": "rm.exe", "command_line": "rm -rf C:\\temp\\stage", "parent_process_name": "cmd.exe" },
+    { "id": "evt-k0l9m8n7", "timestamp": "2025-07-06T22:15:00Z", "hostname": "db-server-01", "event_source": "sysmon", "event_id": 3, "process_name": "chrome.exe", "destination_ip": "104.192.108.8", "destination_port": 443, "url_domain": "dropbox.com" },
+    { "id": "evt-o6p5q4r3", "timestamp": "2025-07-06T22:15:10Z", "hostname": "firewall-01", "event_source": "firewall", "source_ip": "10.0.2.10", "destination_ip": "104.192.108.8", "bytes_out": 85242880 },
+    { "id": "evt-s2t1u0v9", "timestamp": "2025-07-06T22:18:00Z", "hostname": "db-server-01", "event_source": "sysmon", "event_id": 3, "process_name": "chrome.exe", "destination_ip": "172.217.168.78", "destination_port": 443, "url_domain": "drive.google.com" },
+    { "id": "evt-w8x7y6z5", "timestamp": "2025-07-06T22:18:15Z", "hostname": "firewall-01", "event_source": "firewall", "source_ip": "10.0.2.10", "destination_ip": "172.217.168.78", "bytes_out": 85242880 },
+    { "id": "evt-a4b3c2d1", "timestamp": "2025-07-06T22:20:00Z", "hostname": "db-server-01", "event_source": "sysmon", "event_id": 1, "user": "dev_user", "process_name": "del.exe", "command_line": "del C:\\temp\\archive.zip", "parent_process_name": "cmd.exe" },
+    { "id": "evt-e0f9g8h7", "timestamp": "2025-07-06T22:21:00Z", "hostname": "db-server-01", "event_source": "windows_event_log", "event_id": 4634, "user": "dev_user", "message": "User logged off." },
+    { "id": "evt-i6j5k4l3", "timestamp": "2025-07-06T23:00:00Z", "hostname": "hr-system", "event_source": "hris", "event_type": "user_status_change", "user": "dev_user", "change": "Resignation submitted", "effective_date": "2025-07-06" },
+    { "id": "evt-m2n1o0p9", "timestamp": "2025-07-06T23:01:00Z", "hostname": "workstation-dev-5", "event_source": "sysmon", "event_id": 1, "user": "dev_user", "process_name": "powershell.exe", "command_line": "Clear-History", "parent_process_name": "powershell.exe" },
+    { "id": "evt-q8r7s6t5", "timestamp": "2025-07-06T23:02:00Z", "hostname": "workstation-dev-5", "event_source": "browser_history", "user": "dev_user", "action": "clear_history", "time_range": "all" },
+    { "id": "evt-u4v3w2x1", "timestamp": "2025-07-06T23:05:00Z", "hostname": "workstation-dev-5", "event_source": "sysmon", "event_id": 1, "user": "dev_user", "process_name": "sdelete.exe", "command_line": "sdelete.exe -p 3 C:\\Users\\dev_user\\Documents\\", "parent_process_name": "explorer.exe" },
+    { "id": "evt-y0z9a8b7", "timestamp": "2025-07-06T23:10:00Z", "hostname": "firewall-01", "event_source": "vpn", "user": "dev_user", "event_type": "logout", "source_ip": "203.0.113.100" },
+    { "id": "evt-c6d5e4f3", "timestamp": "2025-07-06T23:15:00Z", "hostname": "dhcp-server", "event_source": "dhcp", "mac_address": "00-1B-63-84-45-E6", "ip_address": "10.0.1.88", "action": "release" }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "name": "Scenario 5: Benign Administrative Activity",
+  "description": "A negative control scenario with legitimate IT actions that could be mistaken for malicious activity.",
+  "events": [
+    { "id": "evt-i2j1k0l9", "timestamp": "2025-07-06T14:00:00Z", "hostname": "workstation-101", "event_source": "sysmon", "event_id": 1, "user": "it_admin", "process_name": "powershell.exe", "command_line": "powershell.exe -command \"Get-Process | Sort-Object CPU -Descending | Select-Object -First 10\"", "parent_process_name": "explorer.exe" },
+    { "id": "evt-m8n7o6p5", "timestamp": "2025-07-06T14:02:00Z", "hostname": "dc-02", "event_source": "windows_event_log", "event_id": 4624, "user": "it_admin", "logon_type": 10, "source_ip": "10.0.1.50" },
+    { "id": "evt-q4r3s2t1", "timestamp": "2025-07-06T14:03:00Z", "hostname": "dc-02", "event_source": "sysmon", "event_id": 1, "user": "it_admin", "process_name": "psexec.exe", "command_line": "psexec.exe \\\\workstation-101 -s cmd.exe /c \"ipconfig /flushdns\"", "parent_process_name": "powershell.exe" },
+    { "id": "evt-u0v9w8x7", "timestamp": "2025-07-06T14:05:00Z", "hostname": "workstation-101", "event_source": "sysmon", "event_id": 1, "user": "SYSTEM", "process_name": "PSEXESVC.exe", "parent_process_name": "services.exe" },
+    { "id": "evt-y6z5a4b3", "timestamp": "2025-07-06T14:10:00Z", "hostname": "wsus-server", "event_source": "sysmon", "event_id": 10, "source_process_name": "MsMpEng.exe", "target_process_name": "lsass.exe" },
+    { "id": "evt-c2d1e0f9", "timestamp": "2025-07-06T14:12:00Z", "hostname": "workstation-101", "event_source": "sysmon", "event_id": 1, "user": "it_admin", "process_name": "powershell.exe", "command_line": "powershell.exe -File C:\\admin_scripts\\health_check.ps1", "parent_process_name": "powershell.exe" },
+    { "id": "evt-g8h7i6j5", "timestamp": "2025-07-06T14:15:00Z", "hostname": "vulnerability-scanner", "event_source": "nessus", "scan_type": "network_scan", "target_subnet": "10.0.0.0/24", "status": "completed" },
+    { "id": "evt-k4l3m2n1", "timestamp": "2025-07-06T14:15:05Z", "hostname": "firewall-01", "event_source": "firewall", "source_ip": "10.0.0.25", "destination_ip": "10.0.0.101", "destination_port": 135, "action": "allow" },
+    { "id": "evt-o0p9q8r7", "timestamp": "2025-07-06T14:15:06Z", "hostname": "firewall-01", "event_source": "firewall", "source_ip": "10.0.0.25", "destination_ip": "10.0.0.102", "destination_port": 445, "action": "allow" },
+    { "id": "evt-s6t5u4v3", "timestamp": "2025-07-06T14:20:00Z", "hostname": "sccm-server", "event_source": "sccm", "action": "deploy_package", "package_id": "MS-KB5001330", "target_collection": "All Workstations" },
+    { "id": "evt-w2x1y0z9", "timestamp": "2025-07-06T14:21:00Z", "hostname": "workstation-101", "event_source": "sysmon", "event_id": 1, "user": "SYSTEM", "process_name": "wusa.exe", "command_line": "wusa.exe C:\\windows\\ccmcache\\f1\\windows10.0-kb5001330-x64.msu /quiet /norestart", "parent_process_name": "CcmExec.exe" },
+    { "id": "evt-a8b7c6d5", "timestamp": "2025-07-06T14:25:00Z", "hostname": "workstation-102", "event_source": "windows_event_log", "event_id": 4624, "user": "helpdesk_user", "logon_type": 10, "source_ip": "10.0.1.55" },
+    { "id": "evt-e4f3g2h1", "timestamp": "2025-07-06T14:25:10Z", "hostname": "workstation-102", "event_source": "sysmon", "event_id": 1, "user": "helpdesk_user", "process_name": "tasklist.exe", "command_line": "tasklist.exe", "parent_process_name": "cmd.exe" },
+    { "id": "evt-i0j9k8l7", "timestamp": "2025-07-06T14:25:20Z", "hostname": "workstation-102", "event_source": "sysmon", "event_id": 1, "user": "helpdesk_user", "process_name": "ipconfig.exe", "command_line": "ipconfig /all", "parent_process_name": "cmd.exe" },
+    { "id": "evt-m6n5o4p3", "timestamp": "2025-07-06T14:30:00Z", "hostname": "dns-server", "event_source": "dns", "client_ip": "10.0.1.50", "query_name": "updates.microsoft.com", "response_code": "NOERROR" },
+    { "id": "evt-q2r1s0t9", "timestamp": "2025-07-06T14:31:00Z", "hostname": "proxy-server", "event_source": "squid", "source_ip": "10.0.1.50", "destination_url": "http://ctldl.windowsupdate.com/msdownload/update/v3/static/trustedr/en/authrootstl.cab", "http_status": 200 },
+    { "id": "evt-u8v7w6x5", "timestamp": "2025-07-06T14:35:00Z", "hostname": "workstation-103", "event_source": "sysmon", "event_id": 1, "user": "SYSTEM", "process_name": "svchost.exe", "command_line": "svchost.exe -k netsvcs -p -s BITS", "parent_process_name": "services.exe" },
+    { "id": "evt-y4z3a2b1", "timestamp": "2025-07-06T14:40:00Z", "hostname": "dc-01", "event_source": "windows_event_log", "event_id": 4740, "user": "Administrator", "message": "A user account was locked out." },
+    { "id": "evt-c0d9e8f7", "timestamp": "2025-07-06T14:41:00Z", "hostname": "dc-01", "event_source": "windows_event_log", "event_id": 4767, "user": "Administrator", "message": "A user account was unlocked." },
+    { "id": "evt-g6h5i4j3", "timestamp": "2025-07-06T14:45:00Z", "hostname": "workstation-104", "event_source": "sysmon", "event_id": 10, "source_process_name": "SophosAV.exe", "target_process_name": "lsass.exe" }
+  ]
+}
