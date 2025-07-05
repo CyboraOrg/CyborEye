@@ -1,0 +1,70 @@
+# src/rules/execution.yml
+---
+rule_id: CE-EXEC-001
+rule_name: PowerShell Download Cradle
+description: >
+  Detects the use of PowerShell to download a remote file or script and
+  execute it directly in memory using Invoke-Expression (IEX). This is a
+  common technique for initial payload delivery.
+author: CyborEye Threat Research
+severity: High
+log_sources:
+  - windows_event_4688 # Process Creation with Command Line
+  - sysmon_event_1     # Process Creation with Command Line
+mitre_mapping:
+  tactic: Execution (TA0002)
+  technique_id: T1059.001
+  technique_name: "Command and Scripting Interpreter: PowerShell"
+detection:
+  selection:
+    process_name: 'powershell.exe'
+    # Use the canonical field name
+    process_commandline: 
+      - 'IEX'
+      - 'Invoke-Expression'
+      - 'DownloadString'
+      - 'Net.WebClient'
+      - 'Invoke-WebRequest'
+  filter:
+    parent_process_name: 'sccm.exe' # Example filter for known good admin tools
+  condition: selection and not filter
+false_positives:
+  - Legitimate software deployment or management scripts.
+tags:
+  - powershell
+  - lolbin
+  - fileless
+  - execution
+---
+rule_id: CE-EXEC-002
+rule_name: PowerShell Encoded Command
+description: >
+  Detects the execution of PowerShell with an encoded command (-e, -en, -enc, etc.).
+  While administrators sometimes use this, it is highly favored by adversaries
+  to hide malicious code.
+author: CyborEye Threat Research
+severity: Medium
+log_sources:
+  - windows_event_4688
+  - sysmon_event_1
+mitre_mapping:
+  tactic: Execution (TA0002)
+  technique_id: T1059.001
+  technique_name: "Command and Scripting Interpreter: PowerShell"
+detection:
+  selection:
+    process_name: 'powershell.exe'
+    # Use the canonical field name
+    process_commandline:
+      - '-e '
+      - '-en '
+      - '-enc '
+      - '-enco '
+      - '-encodedcommand'
+  condition: selection
+false_positives:
+  - Some legitimate third-party applications or administrative scripts.
+tags:
+  - powershell
+  - obfuscation
+  - execution

