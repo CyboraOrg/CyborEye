@@ -72,7 +72,14 @@ def run_full_analysis(log_filepath: str) -> Dict[str, Any]:
     """
     try:
         with open(log_filepath, 'r') as f:
-            raw_events = json.load(f)
+            # FIX: Load the entire scenario object first.
+            scenario_data = json.load(f)
+            # Then, extract ONLY the 'events' list to pass to the pipeline.
+            # This ensures the engine is blind to the scenario's name and description.
+            raw_events = scenario_data.get("events", [])
+            
+            if not raw_events:
+                return {"error": "The log file does not contain an 'events' list or is empty."}
         
         pipeline = AnalysisPipeline()
         results = pipeline.run(raw_events)
