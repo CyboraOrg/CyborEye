@@ -1,0 +1,12 @@
+{
+  "T1059.001": { "name": "PowerShell", "tactic": "Execution", "url": "https://attack.mitre.org/techniques/T1059/001/" },
+  "T1003.001": { "name": "OS Credential Dumping: LSASS Memory", "tactic": "Credential Access", "url": "https://attack.mitre.org/techniques/T1003/001/" },
+  "T1569.002": { "name": "System Services: Service Execution", "tactic": "Lateral Movement", "url": "https://attack.mitre.org/techniques/T1569/002/" },
+  "T1033": { "name": "System Owner/User Discovery", "tactic": "Discovery", "url": "https://attack.mitre.org/techniques/T1033/" },
+  "T1087.001": { "name": "Account Discovery: Local Account", "tactic": "Discovery", "url": "https://attack.mitre.org/techniques/T1087/001/" },
+  "T1016": { "name": "System Network Configuration Discovery", "tactic": "Discovery", "url": "https://attack.mitre.org/techniques/T1016/" },
+  "T1047": { "name": "Windows Management Instrumentation", "tactic": "Execution", "url": "https://attack.mitre.org/techniques/T1047/" },
+  "T1547.001": { "name": "Boot or Logon Autostart Execution: Registry Run Keys", "tactic": "Persistence", "url": "https://attack.mitre.org/techniques/T1547/001/" },
+  "T1566.001": { "name": "Phishing: Spearphishing Attachment", "tactic": "Initial Access", "url": "https://attack.mitre.org/techniques/T1566/001/" },
+  "T1204.002": { "name": "User Execution: Malicious File", "tactic": "Execution", "url": "https://attack.mitre.org/techniques/T1204/002/" }
+}
