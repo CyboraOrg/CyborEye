@@ -1,0 +1,89 @@
+rule_id: CE-CLOUD-001
+rule_name: Suspicious AWS EC2 Instance Launch for Crypto-Mining
+description: >
+  Detects the launch of an unusually high number of high-CPU or GPU-intensive EC2
+  instances, a common TTP for crypto-mining operations.
+author: CyborEye Threat Research
+severity: High
+log_sources:
+  - aws_cloudtrail
+mitre_mapping:
+  tactic: Resource Development (TA0042)
+  technique_id: T1583.003
+  technique_name: "Acquire Infrastructure: Virtual Private Server"
+detection:
+  selection:
+    event_source: 'aws_cloudtrail'
+    event_name: 'RunInstances'
+    # Look for instance types commonly used for mining
+    request_parameters.instanceType:
+      - 'c5.24xlarge'
+      - 'p3.16xlarge'
+      - 'g4dn.12xlarge'
+  condition: selection
+false_positives:
+  - Legitimate use of high-performance computing clusters.
+tags:
+  - cloud
+  - aws
+  - crypto-mining
+---
+rule_id: CE-CLOUD-002
+rule_name: AWS Security Logging or Monitoring Disabled
+description: >
+  Detects attempts to disable or delete key AWS security monitoring services like
+  CloudTrail or GuardDuty. This is a strong indicator of an attacker trying to
+  cover their tracks.
+author: CyborEye Threat Research
+severity: Critical
+log_sources:
+  - aws_cloudtrail
+mitre_mapping:
+  tactic: Defense Evasion (TA0005)
+  technique_id: T1562.008
+  technique_name: "Impair Defenses: Disable Cloud Logs"
+detection:
+  selection:
+    event_source: 'aws_cloudtrail'
+    event_name:
+      - 'StopLogging'
+      - 'DeleteTrail'
+      - 'UpdateDetector' # Used to disable GuardDuty
+      - 'DeleteDetector'
+  condition: selection
+false_positives:
+  - Extremely rare, should only occur during major, planned infrastructure decommissioning.
+tags:
+  - cloud
+  - aws
+  - defense_evasion
+---
+rule_id: CE-CLOUD-003
+rule_name: AWS S3 Bucket Made Public
+description: >
+  Detects when a policy is applied to an S3 bucket that makes it publicly accessible.
+  This is a common misconfiguration and a technique used for data exfiltration.
+author: CyborEye Threat Research
+severity: High
+log_sources:
+  - aws_cloudtrail
+mitre_mapping:
+  tactic: Exfiltration (TA0010)
+  technique_id: T1537
+  technique_name: "Transfer Data to Cloud Account"
+detection:
+  selection:
+    event_source: 'aws_cloudtrail'
+    event_name: 'PutBucketPolicy'
+    # Look for the specific JSON that makes a bucket public
+    request_parameters.policy:
+      - '"Effect":"Allow","Principal":"*"'
+      - '"Effect":"Allow","Principal":{"AWS":"*"}'
+  condition: selection
+false_positives:
+  - Buckets that are intentionally public, such as those hosting a public website.
+tags:
+  - cloud
+  - aws
+  - exfiltration
+  - s3

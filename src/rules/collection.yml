@@ -1,0 +1,63 @@
+rule_id: CE-COL-001
+rule_name: Database Export using BCP Utility
+description: >
+  Detects the use of the bcp.exe (Bulk Copy Program) utility to export data
+  from a SQL database to a file. This can be a legitimate administrative action,
+  but in non-standard directories it is highly suspicious and indicative of data staging.
+author: CyborEye Threat Research
+severity: Medium
+log_sources:
+  - sysmon_event_1
+mitre_mapping:
+  tactic: Collection (TA0009)
+  technique_id: T1555
+  technique_name: "Credentials from Password Stores"
+detection:
+  selection:
+    process_name: 'bcp.exe'
+    process_commandline:
+      - 'out' # The bcp command to export data
+  filter:
+    # Exclude common, legitimate backup paths
+    process_commandline:
+      - 'D:\\SQLBackups\\'
+      - 'E:\\MSSQL\\Backup\\'
+  condition: selection and not filter
+false_positives:
+  - Legitimate, ad-hoc database exports by administrators.
+tags:
+  - collection
+  - database
+  - insider_threat
+---
+rule_id: CE-COL-002
+rule_name: Data Compression with Password
+description: >
+  Detects the use of common archiving utilities (7z, WinRAR) to create a
+  password-protected archive. Adversaries and insiders often use this technique
+  to stage and obfuscate data before exfiltration.
+author: CyborEye Threat Research
+severity: Medium
+log_sources:
+  - sysmon_event_1
+mitre_mapping:
+  tactic: Collection (TA0009)
+  technique_id: T1560.001
+  technique_name: "Archive Collected Data: Archive via Utility"
+detection:
+  selection:
+    process_name:
+      - '7z.exe'
+      - 'rar.exe'
+      - 'winrar.exe'
+    # The -p switch is used for password protection in these tools
+    process_commandline:
+      - '-p'
+  condition: selection
+false_positives:
+  - Legitimate use by users to protect sensitive files. Correlation with network
+    events is key to confirming maliciousness.
+tags:
+  - collection
+  - exfiltration
+  - staging

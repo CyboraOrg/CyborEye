@@ -1,5 +1,3 @@
-# src/rules/discovery.yml
----
 rule_id: CE-DISC-001
 rule_name: Command Shell System Discovery
 description: >
@@ -26,7 +24,13 @@ detection:
       - 'netstat.exe'
       - 'tasklist.exe'
       - 'qprocess.exe'
-  condition: selection
+  # FIX: Added a filter to ignore common admin and helpdesk accounts to reduce noise.
+  filter:
+    user_name:
+      - 'admin'
+      - 'helpdesk'
+      - 'support'
+  condition: selection and not filter
 false_positives:
   - Benign user activity or helpdesk troubleshooting.
 tags:

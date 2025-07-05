@@ -1,5 +1,3 @@
-# src/rules/lateral_movement.yml
----
 rule_id: CE-LAT-001
 rule_name: PsExec Execution
 description: >

@@ -1,0 +1,26 @@
+rule_id: CE-IMP-001
+rule_name: Ransomware File Extension Detected
+description: >
+  Detects the creation of files with a known ransomware-associated file extension.
+  This rule uses a regular expression to be flexible. This is a strong indicator
+  of active data encryption for impact (T1486).
+author: CyborEye Threat Research
+severity: Critical
+log_sources:
+  - sysmon_event_11 # File Create
+mitre_mapping:
+  tactic: Impact (TA0040)
+  technique_id: T1486
+  technique_name: Data Encrypted for Impact
+detection:
+  selection:
+    # This regex looks for file paths ending in common ransomware patterns
+    # like .locked, .encrypted, .crypt, etc.
+    file_path: 're:\.(locked|encrypted|crypt[0-9]?|kraken|darkside)$'
+  condition: selection
+false_positives:
+  - Extremely unlikely.
+tags:
+  - ransomware
+  - impact
+  - t1486
