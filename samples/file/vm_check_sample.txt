@@ -1,0 +1,10 @@
+This is a test file to check for anti-analysis techniques.
+It includes strings related to virtualization and debugging.
+
+Common VMWare artifact: vmtoolsd.exe
+Another VMWare string: VMware virtual NIC.
+And a VirtualBox check: VBoxGuest.sys
+
+A common API call is IsDebuggerPresent to see if a debugger is attached.
+Another is OutputDebugStringA.
+This is a test of the Sandbox detection capability.
