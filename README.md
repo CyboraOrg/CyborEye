@@ -1,26 +1,45 @@
-# 🛡️ Agentic SOC - Static File Analysis (MVP)
+# 🛡️ CyborEye: Agentic Security Operations Framework
 
-Agentic SOC is an AI-powered Security Operations Center framework in development. This MVP demonstrates autonomous, multi-agent coordination to perform in-depth static analysis on Portable Executable (PE) files. It combines AI agents for metadata inspection, disassembly analysis, reputation checking, and verdict generation — paving the way for a fully automated malware triage pipeline.
+**CyborEye** is a next-generation, AI-powered framework designed to automate and augment the capabilities of a Security Operations Center (SOC). By leveraging a multi-agent system, CyborEye orchestrates complex analysis tasks across both log data and static files, dramatically reducing manual effort and accelerating incident response.
+
+The core of CyborEye is its **hybrid AI architecture**, which combines the speed and reliability of a deterministic rule engine with the advanced reasoning and narrative-generation capabilities of Large Language Models (LLMs). This approach ensures that analysis is both fast and auditable for known threats, while still providing deep insights for novel or complex incidents.
+
+---
+
+## ✨ Core Features
+
+-   **🤖 Multi-Agent System:** A hierarchical team of AI agents, led by a `SOC_Manager`, that can delegate tasks to specialized `Tier1` and `Tier3` analysts for in-depth analysis.
+-   **🪵 Advanced Log Analysis Engine:**
+    -   **Normalization:** Ingests diverse log formats into a Canonical Data Model (CDM).
+    -   **Smart Triage Engine:** Uses a high-speed, deterministic engine with YAML-based rules to generate initial findings.
+    -   **Correlation Engine:** Builds an "incident graph" in memory to connect disparate findings into a single, coherent incident narrative.
+-   **🔬 Static File Analysis:**
+    -   **YARA Engine:** Performs deep static analysis on files using a fully manageable set of YARA rules.
+    -   **PE & Binary Analysis:** Extracts metadata, disassembles code, and checks file reputation against threat intelligence sources like VirusTotal.
+-   **🖥️ Interactive UI:**
+    -   **Conversational Interface:** A chat-based UI allows analysts to interact with the agentic system using natural language.
+    -   **Full Rule Management:** A dedicated dashboard for viewing, editing, adding, deleting, and toggling both detection (`.yml`) and YARA (`.yar`) rules in real-time.
 
 ---
 
 ## 📦 Requirements
 
-- Python ≥ 3.9
-- [LIEF](https://lief.quarkslab.com/) for parsing PE files
-- OpenAI-compatible LLM (e.g., OpenAI, TapSage)
-- VirusTotal API key (for threat reputation check)
-- Internet access for API queries
+-   Python ≥ 3.9
+-   [AutoGen](https://github.com/microsoft/autogen) for agent orchestration
+-   [Streamlit](https://streamlit.io/) for the interactive web UI
+-   [YARA-Python](https://yara-python.readthedocs.io/) for file scanning
+-   An OpenAI-compatible LLM API
+-   VirusTotal API key (optional, for threat reputation)
 
 ---
 
-## 🔧 Installation
+## 🔧 Installation & Setup
 
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/agentic-soc.git
-cd agentic-soc
+git clone [https://github.com/CyboraOrg/CyborEye.git](https://github.com/CyboraOrg/CyborEye.git)
+cd CyborEye
 ```
 
 ### 2. Install Dependencies
@@ -31,124 +50,85 @@ pip install -r requirements.txt
 
 ### 3. Configure Environment Variables
 
-Create a `.env` file based on the provided template:
+Create a .env file from the example template:
 
 ```bash
 cp .env.example .env
 ```
 
-Then, edit `.env` to include your actual API keys:
+Then, edit `.env` to include your actual API keys. The `BASE_AI_API_URL` is optional and can be used for custom or self-hosted models.
 
-```env
+```
 MODEL_TO_USE=gpt-4o-mini
 OPENAI_API_KEY=sk-your-openai-key
-BASE_AI_API_URL=https://api.tapsage.com/api/v1/wrapper/openai_chat_completion
+BASE_AI_API_URL=[https://api.openai.com/v1](https://api.openai.com/v1)
 
-VT_API_KEY=your-virustotal-api-key
-HOST_IP=127.0.0.1
+# Optional key for file reputation checks
+VIRUSTOTAL_API_KEY=your-virustotal-api-key
 ```
-
-Environment variables are automatically loaded using `python-dotenv`.
 
 ---
 
-## 🚀 How to Run
+## 🚀 Running CyborEye
+Launch the interactive web UI using Streamlit:
 
-### 🧠 Agentic Static PE Analyzer via API
-
-Run the system:
-
-```bash
+```Bash
 python main.py
 ```
 
-This launches a Flask API server and loads the agentic analysis system.
+Navigate to the URL provided by Streamlit (usually `http://127.0.0.1:8000`) in your browser to access the CyborEye dashboard.
 
 ---
 
-## 📤 API Usage
+## 📝 How to Use
+The CyborEye UI is designed to be intuitive for security analysts.
 
-### 📌 Endpoint
+**Conversational Analysis**
 
-```
-POST /upload
-```
+1. **Upload an Artifact**: Use the sidebar to upload a file you want to analyze (this can be a log file like a `.json`, or a binary file like a `.exe` or `.dll`).
+2. **Load the File**: Click the "Load File for Analysis" button to stage the artifact.
+3. **Start Chatting**: Use the chat input at the bottom of the "Conversational Analysis" view to make requests in natural language.
 
-### 🧪 Example Request with `curl`
+**Example Prompts**:
 
-```bash
-curl -X POST -F "file=@yourfile.exe" http://127.0.0.1:5000/upload
-```
+- `"analyze this log file and give me a summary"`
 
-### ✅ Response Format
+- `"run a full tier 1 triage on the uploaded file"`
 
-```json
-{
-  "status": "success",
-  "filename": "yourfile.exe",
-  "result": {
-    "hash_data": { ... },
-    "vt_result": { ... },
-    "pe_summary": "...",
-    "disasm_summary": "...",
-    "verdict": "..."
-  }
-}
-```
+- `"scan this file with the APT29_VBS_Dropper yara rule"`
 
-The system automatically performs:
+**Rule Management**
 
-- Hash and entropy analysis
-- VirusTotal reputation check
-- PE metadata reasoning
-- Disassembly-based inspection
-- Final verdict generation (with confidence and justification)
+1. **Open Manager**: In the sidebar, click the "YARA Rule Management" button.
+2. **View & Toggle**: See a list of all loaded YARA rules. Use the checkbox to enable or disable them for scans.
+3. **Edit, Add, Delete**: Use the inline action buttons to edit existing rules, delete them, or add new rules from scratch using a live editor. All changes are re-compiled in real-time.
 
 ---
 
 ## 🔭 Future Work
-
-Planned enhancements for evolving Agentic SOC into a full-scale autonomous security solution:
-
-- ⚙️ **ELF & Mach-O support** for cross-platform analysis
-- 🧵 **String extractor** for IOCs and readable content
-- 🕸 **YARA rule engine** integration
-- 🔐 **Entropy visualization** and section heatmaps
-- 🧠 **LLM-based feature extraction** and vector embeddings
-- 🗃 **Dynamic sandbox stub** for hybrid analysis
-- 📡 **Threat intelligence fusion** (OTX, AbuseIPDB, etc.)
-- 🧩 **Agent memory and recall** for cross-case reasoning
-- 🔁 **Multi-agent orchestration** with retry/error handling
-- 📊 **Web UI for SOC operators** (Streamlit dashboard)
-
-Suggestions welcome! Open an issue or PR.
+1. **Graph Database Integration**: Migrate the in-memory Correlation Engine to a persistent graph database (like Neo4j) for advanced, cross-incident analysis.
+2. **Stateful Correlation Rules**: Enhance the YAML rule engine to support stateful conditions (e.g., "alert if event A is followed by event B within 5 minutes").
+3. **Automated Response Actions**: Equip agents with the ability to perform response actions, such as isolating a host or blocking an IP via API calls.
+4. **Expanded Toolset**: Integrate more open-source tools for dynamic analysis (sandboxing), memory forensics, and network traffic analysis.
+5. **LLM Fine-Tuning**: Fine-tune a smaller, open-source LLM on security-specific data to act as a more efficient SOC_Manager.
 
 ---
 
 ## 🤝 Contributing
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-We welcome contributions of all types — features, bugfixes, or feedback.
-
-1. Fork the repository
-2. Create your feature branch:  
-   `git checkout -b feature/my-feature`
-3. Commit your changes:  
-   `git commit -m 'Add my feature'`
-4. Push the branch:  
-   `git push origin feature/my-feature`
-5. Open a pull request
-
-Please follow clean code practices and write descriptive commits.
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ---
 
 ## 📜 License
-
-This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)**.  
-You are free to use, modify, and distribute it, as long as you **preserve this license** and release derivative works under the **same license**.
+This project is licensed under the GNU General Public License v3.0. See LICENSE for more information.
 
 ---
 
 ## 🧠 Credits
-
-Built with ❤️ using [AutoGen](https://github.com/microsoft/autogen), [LIEF](https://lief.quarkslab.com/), and a dash of agentic reasoning.
+Built with ❤️ using AutoGen, Streamlit, YARA, and a whole lot of agentic reasoning.
